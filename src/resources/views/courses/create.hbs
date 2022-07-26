@@ -1,0 +1,18 @@
+<div class="container">
+    <form method="POST" action="/courses/store">
+        <div class="mb-3">
+            <label for="inputCourseTitle" class="form-label">Course Title</label>
+            <input type="text" class="form-control" id="inputCourseTitle" name="title">
+        </div>
+        <div class="mb-3">
+            <label for="inputCourseDescription" class="form-label">Course Description</label>
+            <textarea class="form-control" id="inputCourseDescription" rows="5" name="description"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="inputCourseVideoID" class="form-label">Course Video ID</label>
+            <input type="text" class="form-control" id="inputCourseVideoID" name="videoID">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary" href="/me/stored/courses" role="button">Cancel</a>
+    </form>
+</div>

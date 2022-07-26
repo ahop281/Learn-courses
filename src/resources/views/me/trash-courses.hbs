@@ -1,0 +1,99 @@
+<h2>My Trash</h2>
+
+<div class="mt-4">
+  <a class="link-primary" href="/me/stored/courses">Back To
+    Your Courses</a>
+</div>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col" colspan="2">Created Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each courses}}
+      <tr>
+        <th scope="row">{{sum @index 1}}</th>
+        <td>{{this.title}}</td>
+        <td>{{this.createdAt}}</td>
+        <td>
+          <a id="btnRestoreCourse" class="btn" data-bs-id="{{this._id}}"><i
+              class="fa-solid fa-recycle"
+            ></i></a>
+          <a
+            class="btn ms-2"
+            href="#"
+            role="button"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmDeleteCourse"
+            data-bs-id="{{this._id}}"
+          ><i class="fa-solid fa-xmark"></i></a>
+        </td>
+      </tr>
+    {{else}}
+      <tr>
+        <td class="text-center" colspan="4">Your trash is empty.</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+{{! Confirm delete course }}
+<div id="confirmDeleteCourse" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deleting Course?</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this course?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+        <a id="btnDeleteCourse" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="formRestoreCourse" method="POST"></form>
+<form id="formDeleteCourse" method="POST"></form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){ 
+    var courseId; 
+    var form = document.getElementById('formDeleteCourse') 
+    var restoreBtn = document.getElementById('btnRestoreCourse') 
+    var deleteBtn = document.getElementById('btnDeleteCourse')
+
+    document.getElementById('confirmDeleteCourse').addEventListener('show.bs.modal', function (event) { 
+      var button = event.relatedTarget 
+      courseId = button.getAttribute('data-bs-id') 
+    }) 
+      
+    deleteBtn.onclick = function() {
+      form.action = `/courses/${courseId}/force?_method=DELETE` 
+      form.submit() 
+    }
+
+    restoreBtn.onclick = function(e) { 
+      e.preventDefault() 
+      courseId = this.getAttribute('data-bs-id') 
+      form.action = `/courses/${courseId}/restore?_method=PATCH` 
+      form.submit() 
+    } 
+  })
+</script>

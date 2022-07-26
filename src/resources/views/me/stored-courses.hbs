@@ -1,0 +1,172 @@
+<h2>My Courses</h2>
+
+<form class="mt-5" method="POST" action="/courses/handle-form-action">
+  <div class="d-flex flex-row justify-content-between">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="checkAll">
+      <label class="form-check-label" for="checkAll">
+        Check all
+      </label>
+    </div>
+
+    <select id="selectAction" name="action" class="form-select form-select-sm" aria-label=".form-select-sm example" style="width: 80%;" required>
+      <option selected disabled>-- Actions --</option>
+      <option value="DELETE">Delete</option>
+    </select>
+
+    <button id="selectBtn" class="btn btn-primary btn-sm disabled" type="submit">Accept</button>
+  </div>
+
+  <table class="table mt-3">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col" colspan="2">Created Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each courses}}
+        <tr>
+          <th>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="courseIds[]" value="{{this._id}}">
+            </div>
+          </th>
+          <th scope="row">{{sum @index 1}}</th>
+          <td>{{this.title}}</td>
+          <td>{{this.createdAt}}</td>
+          <td>
+            <a class="btn" href="/courses/{{this._id}}/edit" role="button"><i
+                class="fa-solid fa-pen"
+              ></i></a>
+            <a
+              class="btn ms-2"
+              href="#"
+              role="button"
+              data-bs-toggle="modal"
+              data-bs-target="#confirmDeleteCourse"
+              data-bs-id="{{this._id}}"
+            ><i class="fa-solid fa-trash-arrow-up"></i></a>
+          </td>
+        </tr>
+      {{/each}}
+      <tr>
+        <td class="text-center" colspan="4">
+          <a
+            class="mx-2 text-decoration-none"
+            href="/courses/create"
+            role="button"
+          >Create a new course</a></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<div class="mt-5 text-end">
+  <a class="btn position-relative" href="/me/trash/courses">
+    <i class="fa-solid fa-trash fs-3"></i>
+    <span class="trash-mark">{{countDeleted}}</span>
+  </a>
+</div>
+
+{{! Confirm delete course modal }}
+<div id="confirmDeleteCourse" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Moving Course To Trash?</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure to move this course to the trash?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+        <a id="btnDeleteCourse" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="formDeleteCourse" method="POST"></form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){ 
+    var courseId
+
+    $('#confirmDeleteCourse').on('show.bs.modal', function (event) { 
+      var button = event.relatedTarget 
+      courseId = $(button).attr('data-bs-id')
+    }) 
+
+    $('#btnDeleteCourse').click(function() {
+      $('#formDeleteCourse').attr('action', `/courses/${courseId}?_method=DELETE`)
+      $('#formDeleteCourse').submit()
+    })
+
+
+    var courseCheckedIds = []
+    var isChooseAction = false
+
+    const checkEnabled = () => {
+      if (courseCheckedIds.length > 0 && isChooseAction) {
+        $('#selectBtn').removeClass('disabled')
+      }
+      else {
+        $('#selectBtn').addClass('disabled')
+      }
+    }
+
+    checkEnabled()
+
+    $('#checkAll').change(function() {
+      if(this.checked) {
+        $('input[name="courseIds[]"]').each(function() {
+          this.checked = true
+          courseCheckedIds.push(this.value)
+        })
+      }
+      else {
+        $('input[name="courseIds[]"]').each(function() {
+          this.checked = false
+        })
+        courseCheckedIds = []
+      }
+
+      checkEnabled()
+    })
+
+    $('input[name="courseIds[]"]').each(function() {
+      $(this).change(function() {
+        if ($('input[name="courseIds[]"]').length == $('input[name="courseIds[]"]:checked').length) {
+          $('#checkAll').prop('checked', true)
+        }
+        else {
+          $('#checkAll').prop('checked', false)
+        }
+
+        this.checked 
+          ? courseCheckedIds.push(this.value) 
+          : courseCheckedIds = courseCheckedIds.filter(id => id != this.value)
+
+        checkEnabled()
+      })
+    })
+
+    $('#selectAction').change(function() {
+      isChooseAction = true
+      checkEnabled()
+    })
+  })
+</script>

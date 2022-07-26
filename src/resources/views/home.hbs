@@ -1,0 +1,18 @@
+
+    <div class="row">
+
+    <h2 class="mb-5">Courses</h2>
+
+    {{#each courses}}
+    <div class="course-hover card me-4 mb-4 border-0" style="width: 18rem;">
+        <a class="overflow-hidden rounded-3" href="/courses/{{this.slug}}"><img src="{{this.image}}" class="card-img-top" alt="{{this.title}}"></a>
+            
+        <div class="card-body px-0">
+            <a class="text-decoration-none text-dark" href="/courses/{{this.slug}}"><h5 class="card-title">{{this.title}}</h5></a>
+        </div>
+    </div>
+    {{else}}
+      <p>There is no course yet.</p>
+    {{/each}}
+
+    </div>

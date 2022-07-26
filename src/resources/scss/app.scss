@@ -1,0 +1,35 @@
+@import 'variables';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.replace-triple-dots {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.course-hover:hover {
+    a {
+        img {
+            filter: brightness(0.9);
+            transition: all linear 0.2s;
+            transform: scale(1.06)
+        }
+    }
+}
+
+.trash-mark {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 100%;
+    color: #fff;
+    font-size: 10px;
+}
